@@ -42,7 +42,7 @@ PostgreSQL ยังช่วยให้สามารถจัดการโ
 - เชื่อมต่อไปยังเซิร์ฟเวอร์  ใช้ SSH เพื่อเข้าถึงเซิร์ฟเวอร์ (เช่น AWS EC2)
 - Clone โปรเจกต์จาก GitHub ลงเซิร์ฟเวอร์
 ```
-git clone https://github.com/umajiraporn/CT648_pokemon_slots.git
+git clone https://github.com/ARRUKlib/CT648_Pokamon_Slots.git
 cd CT648_pokemon_slots/
 ```
 ### 3.2 Build และ Start Services
