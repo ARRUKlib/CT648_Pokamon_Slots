@@ -22,6 +22,11 @@ client.connect()
   .then(() => console.log('Connected to PostgreSQL'))
   .catch(err => console.error('Connection error', err.stack));
 
+// เส้นทางหลัก
+app.get('/', (req, res) => {
+  res.send('Welcome to the Pokémon Battle API!');
+});
+
 // API endpoint สำหรับการหมุนสล็อต
 app.post('/api/spin-slot', async (req, res) => {
   const { user_id } = req.body;
