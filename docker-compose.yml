@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  reverse_proxy:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend
+      - backend
+
+  frontend:
+    build: ./pokemon-slot-frontend
+    ports:
+      - "3000:3000"  # เปิดพอร์ต frontend สำหรับการเข้าถึงโดยตรง (ถ้าต้องการ)
+    networks:
+      - frontend
+    environment:
+      - REACT_APP_BACKEND_URL=http://3.24.50.90:3001  # ชี้ URL ไปยัง backend
+
+  backend:
+    build: ./pokemon-slot-backend
+    ports:
+      - "3001:3001"  # เปิดพอร์ต backend สำหรับการเข้าถึงโดยตรง
+    networks:
+      - backend
+    environment:
+      - DATABASE_HOST=3.24.50.90  # ชี้ไปยัง service 'db' แทน IP
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=123456789
+      - DATABASE_NAME=postgres
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456789
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  postgres_data:
