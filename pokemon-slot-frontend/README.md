@@ -1,46 +1,59 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+# CT648_Pokamon_Slots
+## 1. หลักการพัฒนา
+โปรเจกต์นี้ออกแบบโดยใช้หลักการพัฒนาแอปพลิเคชันเว็บที่มี Backend เป็นส่วนกลางในการเชื่อมต่อและประมวลผลข้อมูล โดยมีแนวคิดหลักที่สำคัญดังนี้:
+### การใช้ Express.js บน Bun Runtime
+Express.js ใช้เป็น Web Framework สำหรับจัดการเส้นทาง (routing) และสร้าง API endpoints สำหรับแต่ละฟังก์ชันการทำงาน เช่น การลงทะเบียน การเข้าสู่ระบบ การหมุนสล็อต และการเติมเหรียญ
+Bun เป็น runtime ที่ช่วยเพิ่มประสิทธิภาพในการประมวลผลให้เร็วกว่า Node.js ทำให้ API สามารถตอบสนองได้รวดเร็วขึ้น ลดเวลารอคอย (latency) ของผู้ใช้ และทำให้การพัฒนาระบบเป็นไปอย่างราบรื่น
+### การเชื่อมต่อกับฐานข้อมูล PostgreSQL
+ระบบจัดเก็บข้อมูลต่าง ๆ เช่น ข้อมูลผู้ใช้ เหรียญ และอัตราการชนะใน PostgreSQL ซึ่งเป็นฐานข้อมูลเชิงสัมพันธ์ (relational database) และรองรับการทำงานร่วมกับ SQL Query ได้อย่างยืดหยุ่น
+PostgreSQL ยังช่วยให้สามารถจัดการโครงสร้างข้อมูลที่ซับซ้อนได้ เช่น ตาราง user_id สำหรับผู้ใช้ และ game_settings สำหรับการตั้งค่าเกม รวมถึงการสนับสนุนการทำงานแบบ Transaction ที่ช่วยให้การบันทึกข้อมูลมีความน่าเชื่อถือ
+###การจัดการ Transaction ในการทำงานที่สำคัญ
+ในคำสั่งที่เกี่ยวข้องกับการหักเหรียญหรือเพิ่มเหรียญ เช่น การหมุนสล็อตหรือการเติมเงิน ระบบใช้ Transaction เพื่อให้มั่นใจว่าข้อมูลได้รับการบันทึกอย่างถูกต้อง โดยจะทำการยืนยัน (commit) เมื่อคำสั่งสำเร็จหรือยกเลิก (rollback) หากเกิดปัญหา
+## 2. API ที่สำคัญ
+ประกอบด้วย API หลายตัวที่ช่วยให้ระบบ Pokemon Slot สามารถทำงานได้ครบทุกฟังก์ชันที่ผู้ใช้ต้องการ API ที่สำคัญมีดังนี้
+### /api/login
+- สำหรับการเข้าสู่ระบบของผู้ใช้ โดยรับข้อมูล username และ password ระบบจะตรวจสอบข้อมูลความถูกต้องจากฐานข้อมูล และใช้ bcrypt เพื่อเปรียบเทียบรหัสผ่านที่กรอกกับรหัสผ่านที่เข้ารหัสแล้วในฐานข้อมูล
+### /api/register
+- สำหรับการลงทะเบียนผู้ใช้ใหม่ โดยรับข้อมูล username และ password ระบบจะเช็ครหัสซ้ำ และทำการเข้ารหัสรหัสผ่านก่อนบันทึกลงฐานข้อมูล เพื่อความปลอดภัย
+### /api/spin-slot
+- API สำหรับการหมุนสล็อต ระบบจะหักจำนวนเหรียญที่ผู้ใช้มี และสุ่มภาพโปเกม่อน 3 ภาพ โดยใช้อัตราการชนะที่กำหนดไว้ในฐานข้อมูล
+- หากผู้ใช้ชนะ ระบบจะเพิ่มรางวัลเหรียญให้โดยอัตโนมัติและส่งผลลัพธ์กลับมาให้ผู้ใช้ได้ทราบ
+### /api/topup
+- API สำหรับเติมเงินหรือเพิ่มเหรียญให้กับผู้ใช้ โดยรับค่า user_id และ amount เมื่อเติมเงินสำเร็จ ระบบจะอัปเดตยอดเหรียญในฐานข้อมูลและส่งยอดคงเหลือกลับให้ผู้ใช้
+### /api/user-coins
+- ใช้ดึงจำนวนเหรียญที่ผู้ใช้มี โดยรับ user_id ระบบจะค้นหาในฐานข้อมูลและส่งยอดเหรียญคงเหลือกลับให้
+### /api/win-rate และ /api/update-win-rate
+- API ที่เกี่ยวข้องกับอัตราการชนะในเกม โดย /api/win-rate ใช้สำหรับดึงข้อมูลอัตราการชนะปัจจุบัน ในขณะที่ /api/update-win-rate ใช้สำหรับอัปเดตอัตราการชนะในฐานข้อมูล (ในกรณีที่ต้องการปรับเพิ่ม/ลดความยากของเกม)
+### /api/users
+- API นี้ใช้สำหรับดึงข้อมูลผู้ใช้ทั้งหมด เช่น รหัสและชื่อผู้ใช้ ซึ่งเป็นประโยชน์สำหรับการแสดงรายชื่อผู้เล่นทั้งหมดในระบบ
+## 3. วิธี Deploy
+### 3.1 นำโค้ดทั้งหมดขึ้นมาไว้ที่ GitHub
+  โดยมีไฟล์ที่นี้มีบทบาทสำคัญในการ จัดการการทำงานและการรันโปรเจกต์ในสภาพแวดล้อมของ Docker ดังนี้
+#### Dockerfile (ทั้งใน Path ของ backend และ frontend)
+- ใช้กำหนดวิธีการสร้าง Docker image ของแต่ละส่วนของโปรเจกต์ (backend และ frontend)
+- ทำให้แอปพลิเคชันแต่ละส่วนสามารถรันในสภาพแวดล้อมที่เหมือนกันทุกครั้ง ไม่ว่าจะรันที่ไหนก็ตาม
+#### docker-compose.yml
+- รวบรวมทุกบริการ (frontend, backend, database, reverse proxy) ไว้ในไฟล์เดียว
+- ทำให้การจัดการและการรันหลายบริการพร้อมกันง่ายขึ้น โดยสามารถใช้คำสั่งเดียวในการรันทั้งโปรเจกต์
+#### nginx.conf
+- ใช้กำหนดค่าการทำงานของ Nginx เป็น reverse proxy เพื่อเชื่อมต่อและจัดการการเข้าถึงระหว่าง frontend และ backend
+- ช่วยให้ผู้ใช้เข้าถึงแอปพลิเคชันได้อย่างราบรื่นและมีประสิทธิภาพมากขึ้น
+### 3.1 Clone โปรเจกต์
+- เชื่อมต่อไปยังเซิร์ฟเวอร์  ใช้ SSH เพื่อเข้าถึงเซิร์ฟเวอร์ (เช่น AWS EC2)
+- Clone โปรเจกต์จาก GitHub ลงเซิร์ฟเวอร์
+```
+git clone https://github.com/umajiraporn/CT648_pokemon_slots.git
+cd CT648_pokemon_slots/
+```
+### 3.2 Build และ Start Services
+```
+sudo docker-compose up
+```
+หรือ
+```
+sudo docker-compose up --build -d
+```
+### 3.3 เข้าใช้งาน
+- เข้าใช้งานหน้าเว็บโดย URL หรือ IP ของเครื่องที่ให้รัน
+Frontend: http://localhost:3000
+Backend: http://localhost:3001
