@@ -27,7 +27,8 @@ PostgreSQL ยังช่วยให้สามารถจัดการโ
 ### /api/users
 - API นี้ใช้สำหรับดึงข้อมูลผู้ใช้ทั้งหมด เช่น รหัสและชื่อผู้ใช้ ซึ่งเป็นประโยชน์สำหรับการแสดงรายชื่อผู้เล่นทั้งหมดในระบบ
 ## 3. วิธี Deploy
-### 3.1 นำโค้ดทั้งหมดขึ้นมาไว้ที่ GitHub
+### 3.1 รัน Database ไว้บน Server
+### 3.2 นำโค้ดทั้งหมดขึ้นมาไว้ที่ GitHub
   โดยมีไฟล์ที่นี้มีบทบาทสำคัญในการ จัดการการทำงานและการรันโปรเจกต์ในสภาพแวดล้อมของ Docker ดังนี้
 #### Dockerfile (ทั้งใน Path ของ backend และ frontend)
 - ใช้กำหนดวิธีการสร้าง Docker image ของแต่ละส่วนของโปรเจกต์ (backend และ frontend)
@@ -38,14 +39,14 @@ PostgreSQL ยังช่วยให้สามารถจัดการโ
 #### nginx.conf
 - ใช้กำหนดค่าการทำงานของ Nginx เป็น reverse proxy เพื่อเชื่อมต่อและจัดการการเข้าถึงระหว่าง frontend และ backend
 - ช่วยให้ผู้ใช้เข้าถึงแอปพลิเคชันได้อย่างราบรื่นและมีประสิทธิภาพมากขึ้น
-### 3.1 Clone โปรเจกต์
+### 3.3 Clone โปรเจกต์
 - เชื่อมต่อไปยังเซิร์ฟเวอร์  ใช้ SSH เพื่อเข้าถึงเซิร์ฟเวอร์ (เช่น AWS EC2)
 - Clone โปรเจกต์จาก GitHub ลงเซิร์ฟเวอร์
 ```
 git clone https://github.com/ARRUKlib/CT648_Pokamon_Slots.git
 cd CT648_pokemon_slots/
 ```
-### 3.2 Build และ Start Services
+### 3.4 Build และ Start Services
 ```
 sudo docker-compose up
 ```
@@ -53,7 +54,7 @@ sudo docker-compose up
 ```
 sudo docker-compose up --build -d
 ```
-### 3.3 เข้าใช้งาน
+### 3.4 เข้าใช้งาน
 - เข้าใช้งานหน้าเว็บโดย URL หรือ IP ของเครื่องที่ให้รัน
 Frontend: http://localhost:3000
 Backend: http://localhost:3001
