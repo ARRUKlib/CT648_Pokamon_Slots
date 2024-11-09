@@ -1,0 +1,116 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  color: rgb(255, 251, 136);
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.7); /* เพิ่มเงาเพื่อให้นูนขึ้น */
+}
+
+.game-title {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.welcome-message,
+.coin-display {
+  font-size: 18px;
+  margin: 5px 0;
+  color: white;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.7); /* เพิ่มเงาเพื่อให้นูนขึ้น */
+}
+
+.logout-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.slot-machine {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.slot-row {
+  display: flex;
+  gap: 10px;
+}
+
+.slot {
+  width: 100px;
+  height: 100px;
+  background-color: #333;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid #555;
+  transition: transform 0.5s ease;
+}
+
+.slot.spinning {
+  transform: scale(1.1);
+}
+
+
+.pokemon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spin-button {
+  background-color: #4caf50;
+  color: white;
+  font-size: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.spin-button:hover {
+  background-color: #45a049;
+}
+
+.spin-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+
+.win-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffeb3b;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Animation for spinning effect */
+.spinning .pokemon-image {
+  animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
