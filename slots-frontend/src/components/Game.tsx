@@ -3,7 +3,7 @@ import axios from "axios";
 import "./Game.css";
 import backgroundImage from "../assets/images/p_9.jpg";
 
-const apiURL = process.env.REACT_APP_API_URL || 'http://3.24.50.90:3000/api';
+const apiURL = process.env.REACT_APP_API_URL || "http://3.24.50.90:3000/api";
 
 interface GameProps {
   token: string;
@@ -26,9 +26,9 @@ const Game: React.FC<GameProps> = ({ token, onLogout }) => {
   const [betAmount, setBetAmount] = useState<number>(100);
   const [allPokemonImages, setAllPokemonImages] = useState<SlotResult[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [userId, setUserId] = useState<number | null>(null); // ประกาศ userId
+  const [userId, setUserId] = useState<number | null>(null);
 
-
+  // ดึงข้อมูลโปรไฟล์ผู้ใช้
   const fetchUserProfile = useCallback(async () => {
     try {
       const response = await axios.get(`${apiURL}/user-profile`, {
@@ -36,12 +36,17 @@ const Game: React.FC<GameProps> = ({ token, onLogout }) => {
       });
       setUsername(response.data.username);
       setCoins(response.data.coins);
-      setUserId(response.data.id); // เก็บ user_id ไว้ใน state
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
+      setUserId(response.data.id);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error fetching user profile:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error fetching user profile:", error);
+      }
     }
   }, [token]);
-  
+
+  // ดึงข้อมูลภาพโปเกมอนทั้งหมด
   const fetchAllImages = async () => {
     try {
       const response = await axios.get(`${apiURL}/all-pokemon-images`);
@@ -55,8 +60,12 @@ const Game: React.FC<GameProps> = ({ token, onLogout }) => {
         Array.from({ length: 3 }, () => images[Math.floor(Math.random() * images.length)])
       );
       setSlots(initialSlots);
-    } catch (error) {
-      console.error("Error fetching all images:", error);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error fetching all images:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error fetching all images:", error);
+      }
     }
   };
 
@@ -72,85 +81,112 @@ const Game: React.FC<GameProps> = ({ token, onLogout }) => {
     setSlots(randomSlots);
   };
 
-  // ฟังก์ชันสำหรับบันทึกการหมุน
   const recordSpin = async (amount: number, winAmount: number) => {
-    if (!token) {
-      console.error("Token is missing. Cannot record spin.");
-      return;
-    }
-  
     try {
+      if (!userId) {
+        console.error("User ID is missing. Cannot record spin.");
+        return;
+      }
       await axios.post(
         `${apiURL}/record-spin`,
-        { bet_amount: amount, win_amount: winAmount },
+        { user_id: userId, bet_amount: amount, win_amount: winAmount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
       console.log("Spin successfully recorded.");
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("Error recording spin (Axios):", error.response?.data || error.message);
+        console.error("Error recording spin:", error.response?.data || error.message);
       } else {
-        console.error("Unexpected error:", error);
+        console.error("Unexpected error recording spin:", error);
       }
+      throw new Error("Failed to record spin.");
     }
   };
-  
+
+  const updateBalance = async (balance: number) => {
+    try {
+      if (!userId) {
+        console.error("User ID is missing. Cannot update balance.");
+        return;
+      }
+      const response = await axios.post(
+        `${apiURL}/update-balance`,
+        { user_id: userId, balance, action_type: "game_update" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setCoins(response.data.user.new_balance);
+      console.log("Balance updated successfully:", response.data);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error updating balance:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error updating balance:", error);
+      }
+      throw new Error("Failed to update balance.");
+    }
+  };
+
   const spinSlot = async () => {
     if (spinning || coins < betAmount) {
       alert("คุณไม่มียอดเงินเพียงพอในการหมุน กรุณาเติมเงิน");
       return;
     }
-  
+
+    if (!token) {
+      console.error("Token is missing. Please log in again.");
+      alert("Token is missing. Please log in again.");
+      return;
+    }
+
     setSpinning(true);
     setWin(false);
     setReward(0);
     setMessage("Good Luck!");
-  
+
     const newCoins = coins - betAmount;
     setCoins(newCoins);
-  
-    const intervalId = setInterval(randomizeSlots, 100);
-  
+
     try {
+      const intervalId = setInterval(randomizeSlots, 100);
+
       const response = await axios.post(
         `${apiURL}/spin-slot`,
         { betAmount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       const { slots: newSlots, reward: calculatedReward } = response.data;
-  
+
       setTimeout(async () => {
         clearInterval(intervalId);
         setSlots(newSlots);
         setSpinning(false);
-  
-        const updatedCoins = newCoins + calculatedReward;
-        await axios.post(
-          `${apiURL}/update-balance`,
-          { user_id: username, balance: updatedCoins },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-  
-        await recordSpin(betAmount, calculatedReward);
-  
-        setWin(calculatedReward > 0);
-        setReward(calculatedReward);
-        setMessage(
-          calculatedReward > 0
-            ? `Congratulations! You won ${calculatedReward} coins!`
-            : "ขอแสดงความเสียใจด้วยคุณไม่ชนะ"
-        );
-      }, 3000);
-    } catch (error) {
+
+        if (calculatedReward > 0) {
+          setWin(true);
+          setReward(calculatedReward);
+          setMessage(`You Win! Reward: ${calculatedReward}`);
+          try {
+            await updateBalance(coins + calculatedReward);
+          } catch (error: unknown) {
+            console.error("Error updating balance with reward:", error);
+          }
+        } else {
+          setMessage("You Lose! Try again.");
+        }
+
+        try {
+          await recordSpin(betAmount, calculatedReward);
+        } catch (error: unknown) {
+          console.error("Error recording spin:", error);
+        }
+      }, 2000);
+    } catch (error: unknown) {
       console.error("Error spinning slot:", error);
-      clearInterval(intervalId);
       setSpinning(false);
-      setCoins(coins);
+      setMessage("An error occurred. Please try again.");
     }
   };
-  
 
   return (
     <div className="game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
@@ -173,8 +209,8 @@ const Game: React.FC<GameProps> = ({ token, onLogout }) => {
             {row.map((slot, colIndex) => (
               <div key={colIndex} className={`slot ${spinning ? "spinning" : ""}`}>
                 <img
-                  src={slot && slot.image ? slot.image : "path/to/default-image.png"}
-                  alt={slot && slot.name ? slot.name : "Unknown Pokémon"}
+                  src={slot.image}
+                  alt={slot.name}
                   className="pokemon-image"
                 />
               </div>
@@ -188,13 +224,11 @@ const Game: React.FC<GameProps> = ({ token, onLogout }) => {
       </button>
 
       {message && (
-        <p className="win-message">
+        <p className={`win-message ${win ? "win" : "lose"}`}>
           {message}
         </p>
       )}
-
     </div>
-    
   );
 };
 

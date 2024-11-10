@@ -19,6 +19,12 @@ const GameSet: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // ฟังก์ชันล้างข้อความข้อผิดพลาด/สำเร็จ
+  const clearMessages = () => {
+    setError(null);
+    setSuccessMessage(null);
+  };
+
   // ดึงข้อมูลผู้ใช้ทั้งหมด
   const fetchUsers = async () => {
     try {
@@ -38,32 +44,39 @@ const GameSet: React.FC = () => {
 
   // ฟังก์ชันสำหรับการเติมเงิน
   const handleAddBalance = async () => {
+    clearMessages();
     if (!selectedUser) {
       setError("Please select a user first.");
       return;
     }
+    if (amount <= 0) {
+      setError("Amount must be greater than 0.");
+      return;
+    }
     try {
-      await axios.post(
+      const response = await axios.post(
         `${apiURL}/update-balance`,
         {
           user_id: selectedUser.id,
           balance: amount, // ส่งยอดเงินที่ต้องการอัปเดต
+          action_type: "admin_update", // ระบุว่าเป็นการอัปเดตโดย Admin
         },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
-      setSuccessMessage(`Balance updated successfully for ${selectedUser.username}`);
+      setSuccessMessage(`Balance updated successfully for ${selectedUser.username}.`);
       fetchUsers(); // อัปเดตรายการผู้ใช้ใหม่
       setAmount(0); // รีเซ็ตช่องกรอกยอดเงิน
-    } catch (error) {
-      console.error("Error updating balance:", error);
-      setError("Failed to update balance.");
+    } catch (error: any) {
+      console.error("Error updating balance:", error.response?.data?.error || error.message);
+      setError(error.response?.data?.error || "Failed to update balance.");
     }
   };
 
   // ฟังก์ชันสำหรับปรับอัตราชนะ
   const handleUpdateWinRate = async () => {
+    clearMessages();
     if (!selectedUser) {
       setError("Please select a user first.");
       return;
@@ -73,7 +86,7 @@ const GameSet: React.FC = () => {
       return;
     }
     try {
-      await axios.post(
+      const response = await axios.post(
         `${apiURL}/update-win-rate`,
         {
           user_id: selectedUser.id,
@@ -83,12 +96,12 @@ const GameSet: React.FC = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
-      setSuccessMessage(`Win rate updated successfully for ${selectedUser.username}`);
+      setSuccessMessage(`Win rate updated successfully for ${selectedUser.username}.`);
       fetchUsers(); // อัปเดตรายการผู้ใช้ใหม่
       setWinRate(5); // รีเซ็ตช่องเลือก Win Rate
-    } catch (error) {
-      console.error("Error updating win rate:", error);
-      setError("Failed to update win rate.");
+    } catch (error: any) {
+      console.error("Error updating win rate:", error.response?.data?.error || error.message);
+      setError(error.response?.data?.error || "Failed to update win rate.");
     }
   };
 
@@ -102,6 +115,7 @@ const GameSet: React.FC = () => {
         <label>Select User:</label>
         <select
           onChange={(e) => {
+            clearMessages();
             const user = users.find((u) => u.id === Number(e.target.value));
             setSelectedUser(user || null);
           }}
@@ -117,10 +131,18 @@ const GameSet: React.FC = () => {
 
       {selectedUser && (
         <div className="g-user-details">
-          <p>User ID: <strong>{selectedUser.id}</strong></p>
-          <p>Username: <strong>{selectedUser.username}</strong></p>
-          <p><strong>Current Balance:</strong> {Math.floor(selectedUser.balance).toLocaleString()}</p>
-          <p><strong>Current Win Rate:</strong> {Math.floor(selectedUser.win_rate)}%</p>
+          <p>
+            User ID: <strong>{selectedUser.id}</strong>
+          </p>
+          <p>
+            Username: <strong>{selectedUser.username}</strong>
+          </p>
+          <p>
+            <strong>Current Balance:</strong> {Math.floor(selectedUser.balance).toLocaleString()}
+          </p>
+          <p>
+            <strong>Current Win Rate:</strong> {Math.floor(selectedUser.win_rate)}%
+          </p>
         </div>
       )}
 
@@ -132,20 +154,23 @@ const GameSet: React.FC = () => {
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
         />
-        <button className="g-button" onClick={handleAddBalance}>Update Balance</button>
+        <button className="g-button" onClick={handleAddBalance}>
+          Update Balance
+        </button>
       </div>
 
       <div className="g-win-rate-update">
         <h2>Update Win Rate:</h2>
-        <select
-          value={winRate}
-          onChange={(e) => setWinRate(Number(e.target.value))}
-        >
-          {Array.from({ length: 20 }, (_, i) => (i + 1) * 5).map(rate => (
-            <option key={rate} value={rate}>{rate}%</option>
+        <select value={winRate} onChange={(e) => setWinRate(Number(e.target.value))}>
+          {Array.from({ length: 20 }, (_, i) => (i + 1) * 5).map((rate) => (
+            <option key={rate} value={rate}>
+              {rate}%
+            </option>
           ))}
         </select>
-        <button className="g-button" onClick={handleUpdateWinRate}>Update Win Rate</button>
+        <button className="g-button" onClick={handleUpdateWinRate}>
+          Update Win Rate
+        </button>
       </div>
     </div>
   );

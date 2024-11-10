@@ -6,6 +6,7 @@ import { Pool } from 'pg';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
+
 dotenv.config();
 
 const app = express();
@@ -55,10 +56,11 @@ function authenticateToken(req: AuthenticatedRequest, res: Response, next: NextF
 
   jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) return res.status(403).json({ error: 'Invalid token.' });
-    req.user = user; // เพิ่ม role และ userId ลงใน req.user
+    req.user = user; // เพิ่ม user_id และ role ลงใน req.user
     next();
   });
 }
+
 
 function authorizeRole(requiredRole: string) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -223,39 +225,71 @@ app.get('/api/all-pokemon-images', async (req: Request, res: Response) => {
 
 // API สำหรับการหมุนสล็อต
 app.post('/api/spin-slot', authenticateToken, async (req: Request, res: Response) => {
-  const { betAmount } = req.body; // รับยอดเดิมพันจากคำขอ
-  const userId = (req as any).user.userId; // ดึง userId จาก JWT token
-
   try {
-    const slots = await generateRandomSlots(); // ฟังก์ชันสำหรับสุ่มสล็อต
-    const reward = await calculateReward(slots, betAmount); // คำนวณรางวัล
+    const { betAmount } = req.body;
+    const userId = req.user?.userId; // ดึง userId จาก JWT token
 
-    // อัปเดตยอดเงินของผู้ใช้
-    await db.query('UPDATE users SET balance = balance + $1 WHERE id = $2', [reward, userId]);
+    if (!userId) {
+      console.error('Invalid user ID:', userId);
+      return res.status(400).json({ error: 'Invalid or missing user ID' });
+    }
 
-    res.json({ slots, reward, win: reward > 0 });
+    // ตรวจสอบข้อมูลผู้ใช้และดึงค่า win_rate
+    const userResult = await db.query('SELECT balance, win_rate FROM users WHERE id = $1', [userId]);
+    const user = userResult.rows[0];
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    const { balance, win_rate } = user;
+
+    // ตรวจสอบยอดเงินของผู้ใช้
+    if (balance < betAmount) {
+      return res.status(400).json({ error: 'Insufficient balance.' });
+    }
+
+    // สุ่มผลลัพธ์สล็อตโดยใช้ win_rate
+    const slots = await generateRandomSlots(win_rate);
+    const reward = await calculateReward(slots, betAmount);
+
+    // อัปเดตยอดเงินในฐานข้อมูล
+    await db.query('UPDATE users SET balance = balance - $1 + $2 WHERE id = $3', [betAmount, reward, userId]);
+
+    // ส่งผลลัพธ์กลับไปยัง Client
+    res.status(200).json({ slots, reward, win: reward > 0 });
   } catch (error) {
-    console.error("Error handling spin-slot request:", error);
-    res.status(500).json({ error: 'An error occurred during the spin-slot request' });
+    console.error('Error processing spin-slot request:', error.message || error);
+    res.status(500).json({ error: 'An error occurred while processing the spin. Please try again.' });
   }
 });
 
-// ฟังก์ชันสำหรับสุ่มสล็อต
-const generateRandomSlots = async (): Promise<any[]> => {
+
+
+// ฟังก์ชันสำหรับสุ่มผลสล็อต
+const generateRandomSlots = async (winRate: number): Promise<any[][]> => {
   const pokemonList = await db.query('SELECT name, image_url AS image, reward FROM pokemon');
   if (!pokemonList.rows.length) {
     throw new Error('No Pokémon data found in the database.');
   }
 
-  const numRows = 3;
-  const numColumns = 3;
+  const numRows = 3; // จำนวนแถว
+  const numColumns = 3; // จำนวนคอลัมน์
   const slots = [];
+
+  const isWin = Math.random() < winRate; // กำหนดว่าการหมุนนี้จะชนะหรือไม่
 
   for (let i = 0; i < numRows; i++) {
     const row = [];
     for (let j = 0; j < numColumns; j++) {
-      const randomPokemon = pokemonList.rows[Math.floor(Math.random() * pokemonList.rowCount)];
-      row.push(randomPokemon);
+      if (isWin && i === 0) {
+        // หากชนะ สัญลักษณ์ในแถวแรกเหมือนกันทั้งหมด
+        const winningPokemon = pokemonList.rows[Math.floor(Math.random() * pokemonList.rowCount)];
+        row.push(winningPokemon);
+      } else {
+        // สุ่มตามปกติ
+        const randomPokemon = pokemonList.rows[Math.floor(Math.random() * pokemonList.rowCount)];
+        row.push(randomPokemon);
+      }
     }
     slots.push(row);
   }
@@ -263,66 +297,96 @@ const generateRandomSlots = async (): Promise<any[]> => {
   return slots;
 };
 
+
+
 // ฟังก์ชันสำหรับคำนวณรางวัล
 const calculateReward = async (slots: any[][], betAmount: number): Promise<number> => {
   let reward = 0;
+
+  // ดึงข้อมูลสัญลักษณ์พิเศษจากฐานข้อมูล
   const pokemonList = await db.query('SELECT name, reward FROM pokemon');
-  const bonusSymbol = pokemonList.rows.find(pokemon => pokemon.name === 'Pikachu');
   const wildSymbol = pokemonList.rows.find(pokemon => pokemon.name === 'Jigglypuff');
+  const bonusSymbol = pokemonList.rows.find(pokemon => pokemon.name === 'Pikachu');
 
-  if (!bonusSymbol || !wildSymbol) {
-    throw new Error('Bonus or Wild symbols not found in database.');
+  if (!wildSymbol || !bonusSymbol) {
+    throw new Error('Wild or Bonus symbols not found in database.');
   }
 
-  const firstRowSymbols = slots[0].map(slot => slot.name);
-  const allReelMatch = firstRowSymbols.every(symbol => symbol === firstRowSymbols[0]);
-  if (allReelMatch) {
-    reward += bonusSymbol.reward * betAmount;
-  }
-
-  for (let row of slots) {
+  // ตรวจสอบการเรียงแนวนอน
+  slots.forEach(row => {
     const symbols = row.map(slot => slot.name);
     const uniqueSymbols = Array.from(new Set(symbols));
-    if (uniqueSymbols.length === 1) {
-      reward += 2 * row[0].reward * betAmount;
+
+    // ถ้าสัญลักษณ์เหมือนกันทั้งหมด หรือมี Wild Symbol
+    if (uniqueSymbols.length === 1 || (uniqueSymbols.length === 2 && uniqueSymbols.includes(wildSymbol.name))) {
+      reward += row[0].reward * betAmount;
+    }
+  });
+
+  // ตรวจสอบการเรียงแนวตั้ง
+  for (let col = 0; col < slots[0].length; col++) {
+    const columnSymbols = slots.map(row => row[col].name);
+    const uniqueSymbols = Array.from(new Set(columnSymbols));
+
+    if (uniqueSymbols.length === 1 || (uniqueSymbols.length === 2 && uniqueSymbols.includes(wildSymbol.name))) {
+      reward += slots[0][col].reward * betAmount;
     }
   }
 
-  const totalBonusCount = slots.flat().filter(slot => slot.name === bonusSymbol.name).length;
-  if (totalBonusCount === 9) {
-    reward += 3 * bonusSymbol.reward * betAmount;
+  // ตรวจสอบการเรียงแนวทแยง
+  const diagonal1 = slots.map((row, i) => row[i].name);
+  const diagonal2 = slots.map((row, i) => row[row.length - 1 - i].name);
+
+  if (new Set(diagonal1).size === 1 || (new Set(diagonal1).size === 2 && diagonal1.includes(wildSymbol.name))) {
+    reward += slots[0][0].reward * betAmount;
+  }
+  if (new Set(diagonal2).size === 1 || (new Set(diagonal2).size === 2 && diagonal2.includes(wildSymbol.name))) {
+    reward += slots[0][slots.length - 1].reward * betAmount;
   }
 
-  for (let row of slots) {
-    const bonusCount = row.filter(slot => slot.name === bonusSymbol.name).length;
-    if (bonusCount === 3) {
-      reward += 4 * bonusSymbol.reward * betAmount;
-    }
+  // เพิ่มโบนัสถ้าพบ Bonus Symbol
+  const bonusCount = slots.flat().filter(slot => slot.name === bonusSymbol.name).length;
+  if (bonusCount >= 3) {
+    reward += bonusSymbol.reward * betAmount * bonusCount; // คำนวณตามจำนวน Bonus Symbol
   }
 
   return reward;
 };
 
+
+
 // API บันทึก spin
 app.post('/api/record-spin', authenticateToken, async (req: Request, res: Response) => {
   const { bet_amount, win_amount } = req.body;
-  const user_id = req.user.id;
+  const user_id = req.user?.id;
 
+  // ตรวจสอบข้อมูลที่รับมา
   if (!user_id || typeof bet_amount !== 'number' || typeof win_amount !== 'number') {
-    return res.status(400).json({ error: 'Invalid or missing data.' });
+    console.error(`[Error] Invalid or missing data. user_id: ${user_id}, bet_amount: ${bet_amount}, win_amount: ${win_amount}`);
+    return res.status(400).json({ error: 'Invalid or missing data. Please ensure bet_amount and win_amount are numbers.' });
+  }
+
+  if (bet_amount <= 0 || win_amount < 0) {
+    console.error(`[Error] Invalid bet_amount or win_amount. bet_amount: ${bet_amount}, win_amount: ${win_amount}`);
+    return res.status(400).json({ error: 'Invalid bet_amount or win_amount. Bet amount must be positive, and win amount must not be negative.' });
   }
 
   try {
+    console.log(`[Info] Recording spin for user_id: ${user_id}. Bet: ${bet_amount}, Win: ${win_amount}`);
+
+    // บันทึกการทำรายการในตาราง transactions
     await db.query(
       `INSERT INTO transactions (user_id, amount, action_type) VALUES ($1, $2, 'spin')`,
       [user_id, win_amount]
     );
 
+    // บันทึกการหมุนในตาราง spins
     await db.query(
       `INSERT INTO spins (user_id, bet_amount, win_amount, timestamp) VALUES ($1, $2, $3, $4)`,
       [user_id, bet_amount, win_amount, new Date()]
     );
 
+    // อัปเดตข้อมูลใน player_statistics
     await db.query(
       `INSERT INTO player_statistics (user_id, total_spins, total_wins, total_win_amount, last_win_date)
        VALUES ($1, 1, $2, $3, $4)
@@ -340,47 +404,75 @@ app.post('/api/record-spin', authenticateToken, async (req: Request, res: Respon
       ]
     );
 
+    console.log(`[Success] Spin recorded successfully for user_id: ${user_id}`);
     res.status(201).json({ message: 'Spin recorded successfully.' });
-  } catch (error) {
-    console.error('Error recording spin:', error);
-    res.status(500).json({ error: 'Failed to record spin.' });
+  } catch (error: any) {
+    console.error(`[Error] Failed to record spin for user_id: ${user_id}. Error: ${error.message || error}`);
+    res.status(500).json({ error: 'Failed to record spin. Please try again later.' });
   }
 });
 
 
 
+
 // API สำหรับอัปเดตยอดเงิน
 app.post('/api/update-balance', authenticateToken, async (req: Request, res: Response) => {
-  const { user_id, balance } = req.body; // รับ user_id และ balance จาก body
-  const admin_id = req.user.id; // ดึง admin_id จาก token
+  const { user_id, balance, action_type } = req.body; // รับ user_id, balance, และ action_type จาก body
+  const requester_id = req.user.id; // ดึง ID ของผู้ที่ทำคำขอ (อาจเป็น Admin หรือ Player)
+  const requester_role = req.user.role; // ดึง role ของผู้ที่ทำคำขอ ('admin' หรือ 'user')
 
   try {
     // ตรวจสอบว่า user_id และ balance ถูกต้อง
-    if (!user_id || balance === undefined || typeof balance !== 'number' || isNaN(balance)) {
-      return res.status(400).json({ error: 'Invalid or missing user_id or balance.' });
+    if (!user_id || typeof user_id !== 'number') {
+      console.error('Invalid user ID:', user_id);
+      return res.status(400).json({ error: 'Invalid user ID. User ID must be a number.' });
+    }
+    if (typeof balance !== 'number' || isNaN(balance)) {
+      console.error('Invalid balance:', balance);
+      return res.status(400).json({ error: 'Invalid balance. Balance must be a number.' });
+    }
+
+    // ตรวจสอบ action_type ว่าถูกต้องหรือไม่
+    const validActionTypes = ['admin_update', 'game_update'];
+    if (!action_type || !validActionTypes.includes(action_type)) {
+      console.error('Invalid action type:', action_type);
+      return res.status(400).json({ error: 'Invalid action type. Must be "admin_update" or "game_update".' });
     }
 
     // ตรวจสอบว่าผู้ใช้ที่ระบุมีอยู่ในระบบ
-    const userCheck = await db.query('SELECT id FROM users WHERE id = $1', [user_id]);
+    console.log('Fetching user ID:', user_id);
+    const userCheck = await db.query('SELECT id, balance FROM users WHERE id = $1', [user_id]);
     if (userCheck.rowCount === 0) {
-      return res.status(404).json({ error: 'User not found.' });
+      console.error(`User with ID "${user_id}" not found.`);
+      return res.status(404).json({ error: `User with ID "${user_id}" not found.` });
+    }
+    const currentBalance = userCheck.rows[0].balance;
+
+    // ตรวจสอบกรณีผู้เล่น
+    if (requester_role === 'user' && action_type === 'game_update') {
+      if (currentBalance + balance < 0) {
+        console.error('Insufficient balance for user:', user_id);
+        return res.status(400).json({ error: 'Insufficient balance.' });
+      }
     }
 
-    // อัปเดตยอดเงินของผู้ใช้ในฐานข้อมูล
+    // อัปเดตยอดเงินในฐานข้อมูล
+    console.log(`Updating balance for user ID ${user_id} with amount: ${balance}`);
     const updateResult = await db.query(
       `UPDATE users SET balance = balance + $1 WHERE id = $2 RETURNING id, username, balance`,
       [balance, user_id]
     );
-
     const updatedUser = updateResult.rows[0];
 
     // บันทึกการทำรายการในตาราง transactions
+    console.log(`Recording transaction for user ID ${user_id} by requester ID ${requester_id}`);
     await db.query(
-      `INSERT INTO transactions (user_id, admin_id, amount, action_type) VALUES ($1, $2, $3, 'update_balance')`,
-      [user_id, admin_id, balance]
+      `INSERT INTO transactions (user_id, admin_id, amount, action_type) VALUES ($1, $2, $3, $4)`,
+      [user_id, requester_role === 'admin' ? requester_id : null, balance, action_type]
     );
 
     // ส่งข้อมูลผู้ใช้ที่อัปเดตกลับไปยัง client
+    console.log('Balance updated successfully for user ID:', user_id);
     res.status(200).json({
       message: 'Balance updated successfully.',
       user: {
@@ -390,10 +482,13 @@ app.post('/api/update-balance', authenticateToken, async (req: Request, res: Res
       },
     });
   } catch (error) {
-    console.error('Error updating balance:', error);
-    res.status(500).json({ error: 'Failed to update balance.' });
+    console.error('Error updating balance:', error.message || error);
+    res.status(500).json({ error: 'Failed to update balance. Please try again later.' });
   }
 });
+
+
+
 
 
 app.post('/api/update-win-rate', authenticateToken, async (req: Request, res: Response) => {
@@ -446,8 +541,6 @@ app.post('/api/update-win-rate', authenticateToken, async (req: Request, res: Re
     res.status(500).json({ error: 'Failed to update win rate.' });
   }
 });
-
-
 
 
 

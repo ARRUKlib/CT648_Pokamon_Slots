@@ -15,7 +15,7 @@ const Register: React.FC = () => {
       try {
         await axios.post(`${apiURL}/register-admin`, { username, password });
         alert("Registration successful! Please log in.");
-        window.location.href = "/"; // เปลี่ยนเส้นทางไปที่หน้า Login
+        window.location.href = "/admin"; // เปลี่ยนเส้นทางไปที่หน้า Login
       } catch (error) {
         console.error("Registration failed:", error);
         alert("Registration failed. Please try again.");
@@ -51,7 +51,7 @@ const Register: React.FC = () => {
           className="auth-input"
         />
         <button onClick={handleRegister} className="auth-button">Register</button>
-        <p className="auth-link">Already have an account? <a href="/admin">Login</a></p>
+        <p className="auth-link">Already have an account? <a href="/admin">LoginAdmin</a></p>
       </div>
     </div>
   );
