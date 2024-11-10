@@ -1,0 +1,18 @@
+/* Footer.css */
+.footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px; /* เพิ่ม padding เพื่อให้มีที่ว่าง */
+    font-size: 0.9em;
+    width: 100%;
+    position: relative;
+  }
+  
+  .footer p {
+    margin: 0;
+    line-height: 1.5;
+    color: #fff;
+    text-align: center;
+  }
+  

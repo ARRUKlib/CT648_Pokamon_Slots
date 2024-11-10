@@ -1,0 +1,54 @@
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* เปลี่ยนเป็น center เพื่อให้อยู่ตรงกลางทั้งแนวนอนและแนวตั้ง */
+  min-height: 100vh;
+  background: url('../assets/images/pic1.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.admin-header {
+  text-align: center;
+  margin-top: 0; /* ลบ margin-top เพื่อลดระยะห่าง */
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.7); /* เพิ่มเงาเพื่อให้นูนขึ้น */
+}
+
+.admin-header h1 {
+  font-size: 3em;
+  color: #ff8f07;
+  text-align: center;
+}
+
+.admin-header p {
+  font-size: 1.5em;
+  color: #ffffff;
+  text-align: center;
+}
+
+.admin-content {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 50px;
+}
+
+.admin-button {
+  background: #f4cd56;
+  color: #333;
+  padding: 15px 30px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.admin-button:hover {
+  background: #ffca28;
+  transform: scale(1.05);
+}

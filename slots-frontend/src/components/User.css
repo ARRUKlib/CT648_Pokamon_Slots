@@ -1,0 +1,61 @@
+.user-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .button-group {
+    margin-bottom: 20px;
+  }
+  
+  .button-group button {
+    background-color: #4CAF50; /* สีพื้นหลังหลัก */
+    border: none;
+    color: white; /* สีข้อความ */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px; /* ขอบโค้งมน */
+    margin: 0 10px;
+    transition: background-color 0.3s, transform 0.2s; /* เพิ่มการเปลี่ยนแปลงที่ราบรื่น */
+  }
+  
+  .button-group button:hover {
+    background-color: #45a049; /* สีเมื่อโฮเวอร์ */
+  }
+  
+  .button-group button:active {
+    background-color: #388e3c; /* สีเมื่อคลิก */
+    transform: scale(0.95); /* ทำให้ปุ่มย่อเล็กน้อยเมื่อคลิก */
+  }
+  
+  /* สไตล์สำหรับปุ่มที่เลือก */
+  .button-group button.active {
+    background-color: #2e7d32; /* สีพื้นหลังปุ่มที่ถูกเลือก */
+    color: #ffffff; /* สีข้อความเมื่อเลือก */
+  }
+  
+  /* สไตล์ตาราง */
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .user-table th, .user-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .user-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .user-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .user-table tr:hover {
+    background-color: #ddd;
+  }
+  
