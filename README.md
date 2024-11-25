@@ -8,8 +8,7 @@
 - **Frontend**: React.js ใช้ในการแสดงผล (UI/UX)
 - **Backend**: Express.js ใช้จัดการ API
 - **Database**: PostgreSQL ใช้เก็บข้อมูลผู้ใช้, การทำธุรกรรม, และข้อมูลสถิติของเกม
-![diagrams_poke_API drawio](https://github.com/user-attachments/assets/25824896-7df9-4bfa-a019-01c59135f7a8)
-
+![image](https://github.com/user-attachments/assets/5e3c35e0-3b69-4832-8067-14e011549e47)
 
 ### **1.2 แนวคิดการออกแบบ**
 - **แยกหน้าที่ของผู้ใช้**:
