@@ -1,4 +1,4 @@
-<img width="1470" alt="Screenshot 2567-11-25 at 21 44 17" src="https://github.com/user-attachments/assets/6302229a-ef67-4611-a0c6-18fa55ba4838"><img width="1470" alt="Screenshot 2567-11-25 at 21 45 44" src="https://github.com/user-attachments/assets/4f89933f-41da-44fb-8be4-180109083ec4"># CT648_Pokamon_Slots
+# CT648_Pokamon_Slots
 
 ### โปรเจคนี้จัดทำขึ้นเพื่อเป็นการศึกษาการเรียนรู้และพัฒนา   Backend, Frontend, DataBase การใช้งาน API และการเขียนเว็บด้วย Bun และ React เท่านั้น  
 
