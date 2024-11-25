@@ -66,7 +66,6 @@
    - ใช้เพื่อจำกัดสิทธิ์ของ API ให้เฉพาะบทบาทที่กำหนด (`user` หรือ `admin`)  
 <img width="1470" alt="Screenshot 2567-11-09 at 14 57 29" src="https://github.com/user-attachments/assets/2297a683-bae5-4475-87c4-d65ddc0b3237">
 <img width="1470" alt="Screenshot 2567-11-25 at 21 44 17" src="https://github.com/user-attachments/assets/bf8b1628-0af8-4896-bb31-dd9da2f5c160">
----
 
 ### **User Management**
 6. **Register User**  
@@ -86,7 +85,6 @@
      ใช้สำหรับดึงข้อมูลผู้ใช้ทั้งหมด (สำหรับผู้ดูแลระบบเท่านั้น)  
 <img width="1470" alt="Screenshot 2567-11-09 at 15 22 19" src="https://github.com/user-attachments/assets/34788e1f-bdf9-4b6c-8816-2b94c4060a33">
 <img width="1470" alt="Screenshot 2567-11-25 at 21 45 44" src="https://github.com/user-attachments/assets/d72b13ee-09b8-41f7-8883-be5a594ba113">
----
 
 ### **Slot Game**
 10. **Spin Slot**  
@@ -100,10 +98,8 @@
 12. **Get Pokémon Images**  
     - **Endpoint**: `GET /api/pokemon-images`  
       ใช้สำหรับดึงข้อมูลภาพโปเกมอนที่โหลดล่วงหน้ามาจาก PokeAPI โดย API หลักที่ใช้งานคือ https://pokeapi.co/api/v2/pokemon/ ใช้เพื่อดึงข้อมูลโปเกมอนแต่ละตัว เช่น ชื่อ, รูปภาพ, และรายละเอียดอื่นๆ
-<img width="1470" alt="Screenshot 2567-11-09 at 15 03 00" src="https://github.com/user-attachments/assets/6d0154dc-6680-4209-a8ce-4c2149e31bfe">
-<img width="1470" alt="Screenshot 2567-11-09 at 21 34 50" src="https://github.com/user-attachments/assets/f470f11a-1f45-43d6-a08b-7335d549b4b6">
-
----
+<img width="1470" alt="Screenshot 2567-11-25 at 22 03 58" src="https://github.com/user-attachments/assets/fa26ab1c-0935-42bf-a5fa-6d156fdca8ed">
+<img width="1395" alt="Screenshot 2567-11-25 at 22 07 22" src="https://github.com/user-attachments/assets/f391b7e7-c9e4-47ee-b21f-f031cad05c7e">
 
 ### **Finance Management**
 13. **Update Balance**  
