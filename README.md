@@ -102,17 +102,25 @@
 <img width="1395" alt="Screenshot 2567-11-25 at 22 07 22" src="https://github.com/user-attachments/assets/f391b7e7-c9e4-47ee-b21f-f031cad05c7e">
 
 ### **Finance Management**
-13. **Update Balance**  
-    - `POST /api/update-balance`  
-    - ใช้สำหรับอัปเดตยอดเงินของผู้ใช้  
+**13. Update Balance**
+- **API:** `POST /api/update-balance`
+  **ใช้หน้า Admin**  
+    - ใช้เมื่อผู้ดูแลระบบต้องการเพิ่มยอดเงินของผู้ใช้
+  **ใช้หน้าเกม (Game.tsx)**  
+    - ใช้สำหรับอัปเดตยอดเงินผู้เล่นหลังจากที่เล่นเกมเสร็จ เช่น เพิ่มรางวัลหลังจากชนะสล็อต
 
-14. **Update Win Rate**  
-    - `POST /api/update-win-rate`  
-    - ใช้สำหรับปรับค่า Win Rate ของผู้ใช้  
+**14. Update Win Rate**
+- **API:** `POST /api/update-win-rate`
+  - **ใช้หน้า Admin**  
+    ใช้เมื่อผู้ดูแลระบบต้องการปรับค่า Win Rate ของผู้เล่นเฉพาะราย
 
-15. **Win Rate Update (Simplified)**  
-    - `POST /api/win-rate`  
-    - ใช้สำหรับอัปเดตค่า Win Rate แบบง่าย  
+**15. Win Rate Update (Simplified)**
+- **API:** `POST /api/win-rate`
+  **ใช้หน้า Admin**  
+    - ใช้สำหรับเปลี่ยน Win Rate ของผู้เล่นในกรณีทั่วไป เช่น การรีเซ็ตหรือปรับ Win Rate แบบกลุ่ม
+  **อาจใช้ใน Script ภายในระบบ:**  
+    - สำหรับการอัปเดตค่า Win Rate แบบแบ็คเอนด์ เช่น การปรับ Win Rate ตามเหตุการณ์หรือโปรโมชั่นพิเศษ
+
 <img width="1470" alt="Screenshot 2567-11-09 at 15 05 07" src="https://github.com/user-attachments/assets/b5905283-ead4-436a-98b0-6779c7f01466">
 
 ---
