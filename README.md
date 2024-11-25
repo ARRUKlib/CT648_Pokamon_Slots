@@ -50,10 +50,12 @@
 1. **Login User**  
    - `POST /api/login`  
      ใช้สำหรับผู้ใช้เข้าสู่ระบบ และสร้าง JWT Token  
+<img width="1470" alt="Screenshot 2567-11-09 at 14 57 29" src="https://github.com/user-attachments/assets/2297a683-bae5-4475-87c4-d65ddc0b3237">
 
 2. **Login Admin**  
    - `POST /api/admin-login`  
      ใช้สำหรับผู้ดูแลระบบเข้าสู่ระบบ และสร้าง JWT Token  
+<img width="1470" alt="Screenshot 2567-11-25 at 21 44 17" src="https://github.com/user-attachments/assets/bf8b1628-0af8-4896-bb31-dd9da2f5c160">
 
 3. **Record Login**  
    - `POST /api/record-login`  
@@ -64,17 +66,18 @@
 
 5. **Middleware: Authorize Role**  
    - ใช้เพื่อจำกัดสิทธิ์ของ API ให้เฉพาะบทบาทที่กำหนด (`user` หรือ `admin`)  
-<img width="1470" alt="Screenshot 2567-11-09 at 14 57 29" src="https://github.com/user-attachments/assets/2297a683-bae5-4475-87c4-d65ddc0b3237">
-<img width="1470" alt="Screenshot 2567-11-25 at 21 44 17" src="https://github.com/user-attachments/assets/bf8b1628-0af8-4896-bb31-dd9da2f5c160">
+
 
 ### **User Management**
 6. **Register User**  
    - `POST /api/register`  
      ใช้สำหรับลงทะเบียนผู้ใช้ใหม่  
+<img width="1470" alt="Screenshot 2567-11-09 at 15 22 19" src="https://github.com/user-attachments/assets/34788e1f-bdf9-4b6c-8816-2b94c4060a33">
 
 7. **Register Admin**  
    - `POST /api/register-admin`  
      ใช้สำหรับลงทะเบียนผู้ดูแลระบบ  
+<img width="1470" alt="Screenshot 2567-11-25 at 21 45 44" src="https://github.com/user-attachments/assets/d72b13ee-09b8-41f7-8883-be5a594ba113">
 
 8. **Get User Profile**  
    - `GET /api/user-profile`  
@@ -82,9 +85,9 @@
 
 9. **Get All Users**  
    - `GET /api/users`  
-     ใช้สำหรับดึงข้อมูลผู้ใช้ทั้งหมด (สำหรับผู้ดูแลระบบเท่านั้น)  
-<img width="1470" alt="Screenshot 2567-11-09 at 15 22 19" src="https://github.com/user-attachments/assets/34788e1f-bdf9-4b6c-8816-2b94c4060a33">
-<img width="1470" alt="Screenshot 2567-11-25 at 21 45 44" src="https://github.com/user-attachments/assets/d72b13ee-09b8-41f7-8883-be5a594ba113">
+     ใช้สำหรับดึงข้อมูลผู้ใช้ทั้งหมด (สำหรับผู้ดูแลระบบเท่านั้น) 
+<img width="1470" alt="Screenshot 2567-11-25 at 23 06 21" src="https://github.com/user-attachments/assets/395d9797-5a9d-4273-b5f9-16327ef3384a">
+
 
 ### **Slot Game**
 10. **Spin Slot**  
@@ -129,8 +132,9 @@
 
 17. **Get All Player Statistics**  
     - `GET /api/player-statistics`  
-      ใช้สำหรับดึงข้อมูลสถิติการเล่นทั้งหมดของผู้เล่น  
-
+      ใช้สำหรับดึงข้อมูลสถิติการเล่นทั้งหมดของผู้เล่น
+<img width="1470" alt="Screenshot 2567-11-25 at 23 06 21" src="https://github.com/user-attachments/assets/fbe69b3c-60dc-40e8-999e-98b0eb4c3042">
+ 
 ### **Transaction Management**
 18. **Record Admin Action**  
     - `POST /api/record-admin`  
@@ -139,13 +143,14 @@
 19. **Get All Transactions**  
     - `GET /api/transactions`  
       ใช้สำหรับดึงข้อมูลการทำรายการทั้งหมด
+<img width="1470" alt="Screenshot 2567-11-25 at 23 09 12" src="https://github.com/user-attachments/assets/f2102c79-8205-4daf-92f2-dd25c51e9268">
 
 20. **Get All Spins**  
     - `GET /api/spins`  
       ใช้สำหรับดึงข้อมูลการหมุนสล็อตแต่ละรอบ เช่น ในการหมุนแต่ละรอบมีจำนวนเงินเดิมพันเท่าไรได้รางวัลเท่าไร
-<img width="1470" alt="Screenshot 2567-11-09 at 15 07 54" src="https://github.com/user-attachments/assets/1624e8d9-1ea0-456e-8698-d586b40cda88">
+<img width="1470" alt="Screenshot 2567-11-25 at 23 10 26" src="https://github.com/user-attachments/assets/f95039e3-e2c7-4231-94d4-23eeef71d543">
 
----
+
 ## 3. วิธีการ Deploy โปรเจกต์
 
 โปรเจกต์นี้ใช้ **Docker Compose** สำหรับการจัดการบริการ (Frontend, Backend, และฐานข้อมูล) ขั้นตอนการ Deploy มีดังนี้
