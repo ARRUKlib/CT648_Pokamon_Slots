@@ -1,6 +1,6 @@
 # CT648_Pokamon_Slots
 
-###โปรเจคนี้จัดทำขึ้นเพื่อเป็นการศึกษาการเรียนรู้และพัฒนา   Backend, Frontend, DataBase การใช้งาน API และการเขียนเว็บด้วย Bun และ React เท่านั้น  
+### โปรเจคนี้จัดทำขึ้นเพื่อเป็นการศึกษาการเรียนรู้และพัฒนา   Backend, Frontend, DataBase การใช้งาน API และการเขียนเว็บด้วย Bun และ React เท่านั้น  
 
 ## 1. หลักการพัฒนา (Development Principles)
 
