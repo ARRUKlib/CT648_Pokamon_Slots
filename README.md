@@ -120,30 +120,29 @@
     - ใช้สำหรับเปลี่ยน Win Rate ของผู้เล่นในกรณีทั่วไป เช่น การรีเซ็ตหรือปรับ Win Rate แบบกลุ่ม
   **อาจใช้ใน Script ภายในระบบ:**  
     - สำหรับการอัปเดตค่า Win Rate แบบแบ็คเอนด์ เช่น การปรับ Win Rate ตามเหตุการณ์หรือโปรโมชั่นพิเศษ
-
-<img width="1470" alt="Screenshot 2567-11-09 at 15 05 07" src="https://github.com/user-attachments/assets/b5905283-ead4-436a-98b0-6779c7f01466">
-
----
+<img width="1470" alt="Screenshot 2567-11-25 at 22 31 55" src="https://github.com/user-attachments/assets/395a742e-8d9d-4670-917b-ed396e742a89">
 
 ### **Player Statistics**
 16. **Get Player Statistics by User ID**  
     - `GET /api/player-statistics/:userId`  
-    - ใช้สำหรับดึงข้อมูลสถิติการเล่นของผู้ใช้แต่ละคน  
+      ใช้สำหรับดึงข้อมูลสถิติการเล่นของผู้ใช้แต่ละคน  
 
 17. **Get All Player Statistics**  
     - `GET /api/player-statistics`  
-    - ใช้สำหรับดึงข้อมูลสถิติการเล่นทั้งหมด  
-
----
+      ใช้สำหรับดึงข้อมูลสถิติการเล่นทั้งหมดของผู้เล่น  
 
 ### **Transaction Management**
 18. **Record Admin Action**  
     - `POST /api/record-admin`  
-    - ใช้สำหรับบันทึกการทำรายการของผู้ดูแลระบบ  
+      ใช้สำหรับบันทึกการทำรายการของผู้ดูแลระบบ  
 
 19. **Get All Transactions**  
     - `GET /api/transactions`  
-    - ใช้สำหรับดึงข้อมูลการทำรายการทั้งหมด
+      ใช้สำหรับดึงข้อมูลการทำรายการทั้งหมด
+
+20. **Get All Spins**  
+    - `GET /api/spins`  
+      ใช้สำหรับดึงข้อมูลการหมุนสล็อตแต่ละรอบ เช่น ในการหมุนแต่ละรอบมีจำนวนเงินเดิมพันเท่าไรได้รางวัลเท่าไร
 <img width="1470" alt="Screenshot 2567-11-09 at 15 07 54" src="https://github.com/user-attachments/assets/1624e8d9-1ea0-456e-8698-d586b40cda88">
 
 ---
