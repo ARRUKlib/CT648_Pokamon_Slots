@@ -102,7 +102,8 @@
     - **Endpoint**: `GET /api/pokemon-images`  
       ใช้สำหรับดึงข้อมูลภาพโปเกมอนที่โหลดล่วงหน้ามาจาก PokeAPI โดย API หลักที่ใช้งานคือ https://pokeapi.co/api/v2/pokemon/ ใช้เพื่อดึงข้อมูลโปเกมอนแต่ละตัว เช่น ชื่อ, รูปภาพ, และรายละเอียดอื่นๆ
 <img width="1470" alt="Screenshot 2567-11-25 at 22 03 58" src="https://github.com/user-attachments/assets/fa26ab1c-0935-42bf-a5fa-6d156fdca8ed">
-<img width="1395" alt="Screenshot 2567-11-25 at 22 07 22" src="https://github.com/user-attachments/assets/f391b7e7-c9e4-47ee-b21f-f031cad05c7e">
+<img width="1390" alt="Screenshot 2567-11-25 at 23 33 37" src="https://github.com/user-attachments/assets/c60d46a2-aad0-41a4-988f-6bb55cb07e2d">
+
 
 ### **Finance Management**
 **13. Update Balance**
@@ -277,7 +278,7 @@
 - รางวัลคำนวณโดย: รางวัล × จำนวนเงินเดิมพัน
 ---
 ##### กติกาเกมสามารถเข้าดูได้ที่หน้า Rules โดยกดปุ่ม Game Rules ที่หน้า Home
-<img width="1393" alt="Screenshot 2567-11-25 at 23 27 34" src="https://github.com/user-attachments/assets/5c4b5c31-04f7-4791-9cb7-bc113cdab086">
+<img width="1390" alt="Screenshot 2567-11-25 at 23 33 37" src="https://github.com/user-attachments/assets/d95f64cb-d94c-4726-86c4-100bad6572a1">
 
 
 #### **5. หมายเหตุ**
