@@ -133,8 +133,8 @@
 17. **Get All Player Statistics**  
     - `GET /api/player-statistics`  
       ใช้สำหรับดึงข้อมูลสถิติการเล่นทั้งหมดของผู้เล่น
-<img width="1470" alt="Screenshot 2567-11-25 at 23 06 21" src="https://github.com/user-attachments/assets/fbe69b3c-60dc-40e8-999e-98b0eb4c3042">
- 
+<img width="1470" alt="Screenshot 2567-11-25 at 23 12 45" src="https://github.com/user-attachments/assets/4280f686-4406-44e2-b972-89c3821c3265">
+
 ### **Transaction Management**
 18. **Record Admin Action**  
     - `POST /api/record-admin`  
