@@ -1,4 +1,4 @@
-# CT648_Pokamon_Slots
+<img width="1470" alt="Screenshot 2567-11-25 at 21 44 17" src="https://github.com/user-attachments/assets/6302229a-ef67-4611-a0c6-18fa55ba4838"><img width="1470" alt="Screenshot 2567-11-25 at 21 45 44" src="https://github.com/user-attachments/assets/4f89933f-41da-44fb-8be4-180109083ec4"># CT648_Pokamon_Slots
 
 ### โปรเจคนี้จัดทำขึ้นเพื่อเป็นการศึกษาการเรียนรู้และพัฒนา   Backend, Frontend, DataBase การใช้งาน API และการเขียนเว็บด้วย Bun และ React เท่านั้น  
 
@@ -49,15 +49,15 @@
 ### **Authentication and Authorization**
 1. **Login User**  
    - `POST /api/login`  
-   - ใช้สำหรับผู้ใช้เข้าสู่ระบบ และสร้าง JWT Token  
+     ใช้สำหรับผู้ใช้เข้าสู่ระบบ และสร้าง JWT Token  
 
 2. **Login Admin**  
    - `POST /api/admin-login`  
-   - ใช้สำหรับผู้ดูแลระบบเข้าสู่ระบบ และสร้าง JWT Token  
+     ใช้สำหรับผู้ดูแลระบบเข้าสู่ระบบ และสร้าง JWT Token  
 
 3. **Record Login**  
    - `POST /api/record-login`  
-   - ใช้สำหรับบันทึกการล็อกอินของผู้ใช้หรือผู้ดูแลระบบ  
+     ใช้สำหรับบันทึกการล็อกอินของผู้ใช้หรือผู้ดูแลระบบ  
 
 4. **Middleware: Authenticate Token**  
    - ใช้เพื่อตรวจสอบ JWT Token ในทุก API ที่ต้องการการยืนยันตัวตน  
@@ -65,40 +65,41 @@
 5. **Middleware: Authorize Role**  
    - ใช้เพื่อจำกัดสิทธิ์ของ API ให้เฉพาะบทบาทที่กำหนด (`user` หรือ `admin`)  
 <img width="1470" alt="Screenshot 2567-11-09 at 14 57 29" src="https://github.com/user-attachments/assets/2297a683-bae5-4475-87c4-d65ddc0b3237">
-
+<img width="1470" alt="Screenshot 2567-11-25 at 21 44 17" src="https://github.com/user-attachments/assets/bf8b1628-0af8-4896-bb31-dd9da2f5c160">
 ---
 
 ### **User Management**
 6. **Register User**  
    - `POST /api/register`  
-   - ใช้สำหรับลงทะเบียนผู้ใช้ใหม่  
+     ใช้สำหรับลงทะเบียนผู้ใช้ใหม่  
 
 7. **Register Admin**  
    - `POST /api/register-admin`  
-   - ใช้สำหรับลงทะเบียนผู้ดูแลระบบ  
+     ใช้สำหรับลงทะเบียนผู้ดูแลระบบ  
 
 8. **Get User Profile**  
    - `GET /api/user-profile`  
-   - ใช้สำหรับดึงข้อมูลโปรไฟล์ของผู้ใช้  
+     ใช้สำหรับดึงข้อมูลโปรไฟล์ของผู้ใช้  
 
 9. **Get All Users**  
    - `GET /api/users`  
-   - ใช้สำหรับดึงข้อมูลผู้ใช้ทั้งหมด (สำหรับผู้ดูแลระบบเท่านั้น)  
+     ใช้สำหรับดึงข้อมูลผู้ใช้ทั้งหมด (สำหรับผู้ดูแลระบบเท่านั้น)  
 <img width="1470" alt="Screenshot 2567-11-09 at 15 22 19" src="https://github.com/user-attachments/assets/34788e1f-bdf9-4b6c-8816-2b94c4060a33">
+<img width="1470" alt="Screenshot 2567-11-25 at 21 45 44" src="https://github.com/user-attachments/assets/d72b13ee-09b8-41f7-8883-be5a594ba113">
 ---
 
 ### **Slot Game**
 10. **Spin Slot**  
-    - `POST /api/spin-slot`  
-    - ใช้สำหรับการหมุนสล็อต และคำนวณผลรางวัล  
+    - **Endpoint**: `POST /api/spin-slot`  
+      ใช้สำหรับหมุนสล็อตและคำนวณผลลัพธ์ของเกม เช่น การจัดเรียงของสัญลักษณ์ในแนวแถว คอลัมน์ หรือแนวทแยง พร้อมรางวัลที่ได้รับ
 
 11. **Record Spin**  
-    - `POST /api/record-spin`  
-    - ใช้สำหรับบันทึกข้อมูลการหมุนสล็อต  
+    - **Endpoint**: `POST /api/record-spin`  
+      ใช้สำหรับบันทึกข้อมูลการหมุนสล็อต เช่น จำนวนเงินเดิมพัน จำนวนเงินที่ชนะ จำนวนการหมุน และอัปเดตข้อมูลในตารางสถิติ
 
-12. **Get All Pokémon Images**  
-    - `GET /api/all-pokemon-images`  
-    - ใช้สำหรับดึงภาพโปเกมอนทั้งหมด  
+12. **Get Pokémon Images**  
+    - **Endpoint**: `GET /api/pokemon-images`  
+      ใช้สำหรับดึงข้อมูลภาพโปเกมอนที่โหลดล่วงหน้ามาจาก PokeAPI โดย API หลักที่ใช้งานคือ https://pokeapi.co/api/v2/pokemon/ ใช้เพื่อดึงข้อมูลโปเกมอนแต่ละตัว เช่น ชื่อ, รูปภาพ, และรายละเอียดอื่นๆ
 <img width="1470" alt="Screenshot 2567-11-09 at 15 03 00" src="https://github.com/user-attachments/assets/6d0154dc-6680-4209-a8ce-4c2149e31bfe">
 <img width="1470" alt="Screenshot 2567-11-09 at 21 34 50" src="https://github.com/user-attachments/assets/f470f11a-1f45-43d6-a08b-7335d549b4b6">
 
