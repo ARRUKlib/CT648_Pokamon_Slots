@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./slots-frontend
+    ports:
+      - "3001:3001"
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:3000
+    networks:
+      - default
+
+  backend:
+    build:
+      context: ./slots-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_HOST=db  # ใช้ชื่อ service `db` ใน docker-compose.yml
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=12345678
+      - DATABASE_NAME=ct648
+      - DATABASE_PORT=5432  # ใช้พอร์ตเริ่มต้นของ PostgreSQL
+      - PATH=/root/.bun/bin:$PATH
+    depends_on:
+      - db
+    networks:
+      - default
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=ct648
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  postgres_data:
