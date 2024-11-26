@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es2015",  // เปลี่ยนจาก "es5" เป็น "es2015"
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "downlevelIteration": true // เพิ่มเพื่อรองรับการวนลูป for...of ใน ES5 หรือเวอร์ชันต่ำกว่า
+  },
+  "include": [
+    "src"
+  ]
+}
+

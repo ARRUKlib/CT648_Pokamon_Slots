@@ -1,0 +1,87 @@
+.game-set-container {
+    width: 100%;
+    max-width: 900px;
+    min-height: 100vh; /* ความสูงเต็มหน้าจอ */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .g-error-message {
+    color: red;
+    text-align: center;
+  }
+  
+  .g-success-message {
+    color: green;
+    text-align: center;
+  }
+  
+  .g-user-selection,
+  .g-balance-update,
+  .g-win-rate-update {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .g-user-selection label,
+  .g-balance-update h2,
+  .g-win-rate-update h2 {
+    margin-bottom: 10px;
+    text-align: left;
+    width: 100%;
+    font-weight: bold;
+  }
+  
+  select,
+  input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .g-button {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .g-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .g-user-details {
+    text-align: left;
+    margin: 0 auto 20px auto; /* กำหนด margin ซ้าย-ขวาเป็น auto เพื่อให้อยู่กึ่งกลาง */
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    display: block;
+  }
+  
+  
